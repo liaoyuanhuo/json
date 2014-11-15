@@ -39,8 +39,8 @@ struct json_iter {
 struct json_iter json_begin(const json_char*, json_size);
 struct json_iter json_read(const struct json_iter*, struct json_token*);
 struct json_iter json_parse(const struct json_iter*, json_pair);
-json_char *json_dup(struct json_token*, void*(*alloc)(size_t));
-int json_cpy(json_char *dst, json_size max, struct json_token*);
+json_char *json_dup(const struct json_token*, void*(*alloc)(size_t));
+int json_cpy(json_char *dst, json_size max, const struct json_token*);
 int json_cmp(const struct json_token* tok, const json_char* str);
 enum json_typ json_type(const struct json_token *tok);
 

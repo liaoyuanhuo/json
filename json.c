@@ -208,7 +208,7 @@ json_parse(const struct json_iter* it, json_pair p)
 }
 
 json_char*
-json_dup(struct json_token* tok, void*(*alloc)(size_t))
+json_dup(const struct json_token* tok, void*(*alloc)(size_t))
 {
     if (!tok || !alloc)
         return NULL;
@@ -223,13 +223,13 @@ json_dup(struct json_token* tok, void*(*alloc)(size_t))
 }
 
 int
-json_cpy(json_char *dst, json_size max, struct json_token* tok)
+json_cpy(json_char *dst, json_size max, const struct json_token* tok)
 {
     if (!dst || !max || !tok)
         return -1;
 
     int result;
-    json_size *siz;
+    const json_size *siz;
     if (max <= (tok->len + 1)) {
         result = max;
         max--;
