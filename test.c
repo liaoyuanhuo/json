@@ -8,6 +8,9 @@
 #include <string.h>
 #include "json.h"
 
+#define PASS "\e[32mPASS\e[39m"
+#define FAIL "\e[31mFAIL\e[39m"
+
 #define test_section(desc) \
     do { \
         printf("--------------- {%s} ---------------\n", desc);\
@@ -16,8 +19,8 @@
 #define test_assert(cond) \
     do { \
         int pass = cond; \
-        printf("[%s] %s:%d: ", pass ? "PASS" : "FAIL", __FILE__, __LINE__);\
-        printf((strlen(#cond) > 50 ? "%.47s...\n" : "%s\n"), #cond);\
+        printf("[%s] %s:%d: ", pass ? PASS : FAIL, __FILE__, __LINE__);\
+        printf((strlen(#cond) > 60 ? "%.47s...\n" : "%s\n"), #cond);\
         if (pass) pass_count++; else fail_count++; \
     } while (0)
 
@@ -232,7 +235,6 @@ int main(void)
         test_assert(!json_cmp(&pair[JSON_NAME], (json_char*)"\"b\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (json_char*)"\"0a1b2\""));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_STRING);
-
     }
     test_result();
     exit(EXIT_SUCCESS);
