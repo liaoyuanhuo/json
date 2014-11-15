@@ -4,9 +4,9 @@ The implementation is very simple but should parse any valid
 json input, but trades validation for efficency.
 One pass of the parser only reads up to the first depth of object value
 and pair(key,value), but deeper levels can be reached with the parsed output.
-The general concept is based on (js0n)[https://github.com/quartzjer/js0n] but
+The general concept is based on [js0n](https://github.com/quartzjer/js0n) but
 implements a different API. In addition the origin of the nice test macros can be
-found in (dyad)[https://github.com/rxi/dyad].
+found in [dyad](https://github.com/rxi/dyad).
 
 ## Features
     - written in C
