@@ -6,7 +6,7 @@ One pass of the parser only reads up to the first depth of object value
 and pair(key,value), but deeper levels can be reached with the parsed output.
 The general concept is based on [js0n](https://github.com/quartzjer/js0n) but
 implements a different API. In addition the origin of the nice test macros can be
-found in [dyad](https://github.com/rxi/dyad).
+found in [vec](https://github.com/rxi/vec).
 
 ## Features
     - written in C
