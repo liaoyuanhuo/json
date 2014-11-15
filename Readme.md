@@ -1,8 +1,8 @@
 # JSON
-A one-pass JSON parser with no memory overhead with no memory copying or allocation.
-The implementation is very simple but should parse any valid
+A one-pass JSON parser with no memory overhead with no memory copying or
+allocating. The implementation is very simple but should parse any valid
 json input, but trades validation for efficency.
-One pass of the parser only reads up to the first depth of object value
+One pass of the parser only reads up to the first depth of value
 and pair(key,value), but deeper levels can be reached with the parsed output.
 The general concept is based on [js0n](https://github.com/quartzjer/js0n) but
 implements a different API. In addition the origin of the nice test macros can be
@@ -10,7 +10,7 @@ found in [vec](https://github.com/rxi/vec).
 
 ## Features
     - written in C
-    - minimal (~250 loc)
+    - small (~250 loc)
     - no allocation
     - utf8 support
     - minimal validation
@@ -23,18 +23,18 @@ build environment:
 * Standard C library
 
 ## Usage
-First the json parser iterator needs to be initialized using
+First the json parser iterator needs to be created by using
 the `json_begin` function which takes a utf8 string + length in bytes
-and returns the iterator.
+and returns the newly created iterator.
 
 ```c
 struct json_iter iter;
 iter = json_begin(json, len);
 ```
-To further parse the json file there are two functions.
+To further parse the JSON file there are two functions.
 First the `json_read` function which reads in the next token
-and returns the next iterator. `json_read` is useful for reading
-array values.
+and returns the next iterator. `json_read` main purpose is reading
+array values and providing the base for the next function.
 
 ```c
 struct json_token tok;
@@ -62,17 +62,16 @@ size to copy into and returns the number of bytes that have been copied.
 json_char buf[BUF_SIZ]
 int size = json_cpy(buf, BUF_SIZ, &tok);
 ```
-The last two utitlity function are`json_cmp` and `json_type`. `json_cmp` compares a token with a given
+The last two utitlity function are `json_cmp` and `json_type`. `json_cmp` compares a token with a given
 string pointer and returns if these two are equal.
 ```c
 const json_char buf[] = "token";
 int eq = !json_cmp(&tok, buf);
 ```
-`json_type` returns the type a given token, but as well as the main parsing
+`json_type` returns the type of a given token, but as well as the main parsing
 function does not perform extensive validation of content.
 ```c
 const enum json_typ t = json_type(&tok);
 ```
-
 # License
     (The MIT License)
