@@ -20,7 +20,6 @@ To build and use the JSON parser you only need to drop the two
 Source files into your project and offer the following
 build environment:
 * GCC or clang compiler
-* Standard C library
 
 ## Usage
 First the json parser iterator needs to be created by using
