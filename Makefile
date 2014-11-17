@@ -8,8 +8,9 @@ DCC = clang
 #Flags
 DFLAGS = -g -Wall -Wextra -Werror -Wformat -Wunreachable-code
 DFLAGS += -fstack-protector -Winline -Wshadow -Wwrite-strings
-DFLAGS += -Wstrict-prototypes -Wold-style-definition
+DFLAGS += -Wstrict-prototypes -Wold-style-definition -Wconversion
 DFLAGS += -Wredundant-decls -Wnested-externs -Wmissing-include-dirs
+DFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wmissing-prototypes -Wconversion
 CFLAGS = -O3 -fno-gcse
 
 .PHONY: release

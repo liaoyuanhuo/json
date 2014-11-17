@@ -99,7 +99,7 @@ json_read(const struct json_iter* prev, struct json_token *obj)
     if (!iter.go)
         iter.go = go_struct;
 
-    int len = iter.len;
+    json_size len = iter.len;
     const json_char *cur;
     int utf8_remain = 0;
     for (cur = iter.src; len; cur++, len--) {
@@ -111,7 +111,7 @@ json_read(const struct json_iter* prev, struct json_token *obj)
         iter.src = NULL;
         iter.len = 0;
         if (obj->str)
-            obj->len = (cur-1) - obj->str;
+            obj->len = (json_size)((cur-1) - obj->str);
         return iter;
     }
 
@@ -126,7 +126,7 @@ l_up:
 
 l_down:
     if (--iter.depth == 1) {
-        obj->len = cur - obj->str;
+        obj->len = (json_size)(cur - obj->str);
         goto l_yield;
     }
     goto l_loop;
@@ -140,7 +140,7 @@ l_qup:
 l_qdown:
     iter.go = go_struct;
     if (iter.depth == 1) {
-        obj->len = (cur - obj->str);
+        obj->len = (json_size)(cur - obj->str);
         goto l_yield;
     }
     goto l_loop;
@@ -162,7 +162,7 @@ l_bare:
 l_unbare:
     iter.go = go_struct;
     if (iter.depth == 1) {
-        obj->len = (cur - obj->str);
+        obj->len = (json_size)(cur - obj->str);
         iter.src = cur;
         iter.len = len;
         return iter;
@@ -222,13 +222,13 @@ json_dup(const struct json_token* tok, void*(*alloc)(size_t))
     return str;
 }
 
-int
+json_size
 json_cpy(json_char *dst, json_size max, const struct json_token* tok)
 {
     if (!dst || !max || !tok)
-        return -1;
+        return 0;
 
-    int result;
+    json_size result;
     const json_size *siz;
     if (max <= (tok->len + 1)) {
         result = max;
@@ -281,11 +281,11 @@ json_type(const struct json_token *tok)
         else
             return JSON_NONE;
     }
-    if (!json_cmp(tok, (json_char*)"true"))
+    if (!json_cmp(tok, (const json_char*)"true"))
         return JSON_TRUE;
-    if (!json_cmp(tok, (json_char*)"false"))
+    if (!json_cmp(tok, (const json_char*)"false"))
         return JSON_FALSE;
-    if (!json_cmp(tok, (json_char*)"null"))
+    if (!json_cmp(tok, (const json_char*)"null"))
         return JSON_NULL;
     return JSON_NUMBER;
 }
