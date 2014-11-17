@@ -3,19 +3,19 @@
     vurtun <polygone@gmx.net>
     MIT license
 */
-#include <stdlib.h>
-#include <string.h>
 #include "json.h"
 
 /* remove gcc warning for static init*/
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverride-init"
 
+static const struct json_iter ITER_NULL;
+static const struct json_token TOKEN_NULL;
+
 struct json_iter
 json_begin(const json_char* str, json_size len)
 {
-    struct json_iter iter;
-    memset(&iter, 0, sizeof iter);
+    struct json_iter iter = {0};
     iter.src = str;
     iter.len = len;
     return iter;
@@ -85,16 +85,14 @@ json_read(const struct json_iter* prev, struct json_token *obj)
     };
 
     if (!prev || !obj || !prev->src || !prev->len || prev->err) {
-        struct json_iter it;
-        memset(&it, 0, sizeof it);
-        memset(&obj, 0, sizeof(*obj));
+        struct json_iter it = {0};
+        *obj = TOKEN_NULL;
         it.err = 1;
         return it;
     }
 
-    struct json_iter iter;
-    memset(obj, 0, sizeof(*obj));
-    memcpy(&iter, prev, sizeof iter);
+    struct json_iter iter = *prev;
+    *obj = TOKEN_NULL;
     iter.err = 0;
     if (!iter.go)
         iter.go = go_struct;
@@ -108,7 +106,7 @@ json_read(const struct json_iter* prev, struct json_token *obj)
     }
 
     if (!iter.depth) {
-        iter.src = NULL;
+        iter.src = 0;
         iter.len = 0;
         if (obj->str)
             obj->len = (json_size)((cur-1) - obj->str);
@@ -207,17 +205,20 @@ json_parse(const struct json_iter* it, json_pair p)
     return json_read(&next, &p[JSON_VALUE]);
 }
 
+
 json_char*
-json_dup(const struct json_token* tok, void*(*alloc)(size_t))
+json_dup(const struct json_token *tok, void*(*alloc)(json_size))
 {
     if (!tok || !alloc)
-        return NULL;
+        return 0;
 
     json_char *str = alloc(tok->len + 1);
     if (!str)
-        return NULL;
+        return 0;
 
-    memcpy(str, tok->str, tok->len);
+    unsigned i = 0;
+    for (i = 0; i < tok->len; i++)
+        str[i] = tok->str[i];
     str[tok->len] = '\0';
     return str;
 }
@@ -239,7 +240,11 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
         siz = &tok->len;
     }
 
-    memcpy(dst, tok->str, *siz);
+    unsigned i = 0;
+    for (i = 0; i < *siz; i++)
+        dst[i] = tok->str[i];
+
+    //memcpy(dst, tok->str, *siz);
     dst[*siz] = '\0';
     return result;
 }

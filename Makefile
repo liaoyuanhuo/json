@@ -6,11 +6,13 @@ CC = gcc
 DCC = clang
 
 #Flags
-DFLAGS = -g -Wall -Wextra -Werror -Wformat -Wunreachable-code
+DFLAGS = -g -Wall -Wextra -Werror -Wformat=2 -Wunreachable-code
 DFLAGS += -fstack-protector -Winline -Wshadow -Wwrite-strings
 DFLAGS += -Wstrict-prototypes -Wold-style-definition -Wconversion
 DFLAGS += -Wredundant-decls -Wnested-externs -Wmissing-include-dirs
 DFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wmissing-prototypes -Wconversion
+DFLAGS += -Wswitch-default -Wundef -Wno-unused -Wstrict-overflow=5 -Wsign-conversion
+DFLAGS += -Winit-self -Wlogical-op
 CFLAGS = -O3 -fno-gcse
 
 .PHONY: release

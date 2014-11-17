@@ -10,7 +10,7 @@
 #define JSON_VALUE 1
 
 typedef unsigned char json_char;
-typedef unsigned int json_size;
+typedef unsigned long json_size;
 
 enum json_typ {
     JSON_NONE,
@@ -39,7 +39,7 @@ struct json_iter {
 struct json_iter json_begin(const json_char*, json_size);
 struct json_iter json_read(const struct json_iter*, struct json_token*);
 struct json_iter json_parse(const struct json_iter*, json_pair);
-json_char *json_dup(const struct json_token*, void*(*alloc)(size_t));
+json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
 json_size json_cpy(json_char *dst, json_size max, const struct json_token*);
 int json_cmp(const struct json_token* tok, const json_char* str);
 enum json_typ json_type(const struct json_token *tok);
