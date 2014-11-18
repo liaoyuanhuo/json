@@ -244,7 +244,6 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
     for (i = 0; i < *siz; i++)
         dst[i] = tok->str[i];
 
-    //memcpy(dst, tok->str, *siz);
     dst[*siz] = '\0';
     return result;
 }

@@ -40,8 +40,8 @@ struct json_iter json_begin(const json_char*, json_size);
 struct json_iter json_read(const struct json_iter*, struct json_token*);
 struct json_iter json_parse(const struct json_iter*, json_pair);
 json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
-json_size json_cpy(json_char *dst, json_size max, const struct json_token*);
-int json_cmp(const struct json_token* tok, const json_char* str);
+json_size json_cpy(json_char*, json_size, const struct json_token*);
+int json_cmp(const struct json_token*, const json_char*);
 enum json_typ json_type(const struct json_token *tok);
 
 #endif
