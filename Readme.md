@@ -81,6 +81,7 @@ fraction ([0-9]*.[0-9]*) numbers.
 ```c
 json_number num = 0;
 int res = (json_num(&num, &tok) == JSON_NUMBER);
+```
 
 # License
     (The MIT License)
