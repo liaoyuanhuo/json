@@ -46,5 +46,4 @@ int json_cmp(const struct json_token*, const json_char*);
 enum json_typ json_type(const struct json_token*);
 enum json_typ json_num(json_number *num, const struct json_token *tok);
 
-
 #endif

@@ -61,8 +61,8 @@ size to copy into and returns the number of bytes that have been copied.
 json_char buf[BUF_SIZ]
 int size = json_cpy(buf, BUF_SIZ, &tok);
 ```
-The last two utitlity function are `json_cmp` and `json_type`. `json_cmp` compares a token with a given
-string pointer and returns if these two are equal.
+The last three utitlity function are `json_cmp`, `json_type` and `json_num`.
+`json_cmp` compares a token with a given string pointer and returns if these two are equal.
 ```c
 const json_char buf[] = "token";
 int eq = !json_cmp(&tok, buf);
@@ -72,5 +72,15 @@ function does not perform extensive validation of content.
 ```c
 const enum json_typ t = json_type(&tok);
 ```
+Last but no least `json_num` converts a read token into a number that
+is provided as an argument and returns JSON_NUMBER on success. As with most
+provided functions no validation takes place and the user has to make sure
+the token is correct. Furthermore not all JSON number representation can
+be converted. As for now the conversion is limited on integers ([0-9]*) and simple
+fraction ([0-9]*.[0-9]*) numbers.
+```c
+json_number num = 0;
+int res = (json_num(&num, &tok) == JSON_NUMBER);
+
 # License
     (The MIT License)
