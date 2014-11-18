@@ -212,14 +212,14 @@ json_dup(const struct json_token *tok, void*(*alloc)(json_size))
     if (!tok || !alloc)
         return 0;
 
-    json_char *str = alloc(tok->len + 2);
+    json_char *str = alloc(tok->len + 1);
     if (!str)
         return 0;
 
     unsigned i = 0;
     for (i = 0; i <= tok->len; i++)
         str[i] = tok->str[i];
-    str[tok->len+2] = '\0';
+    str[tok->len+1] = '\0';
     return str;
 }
 
@@ -231,9 +231,9 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
 
     json_size result;
     const json_size *siz;
-    if (max <= (tok->len + 2)) {
+    if (max <= (tok->len + 1)) {
         result = max;
-        max -= 2;
+        max -= 1;
         siz = &max;
     } else {
         result = tok->len;
