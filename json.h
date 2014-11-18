@@ -11,6 +11,7 @@
 
 typedef unsigned char json_char;
 typedef unsigned long json_size;
+typedef double json_number;
 
 enum json_typ {
     JSON_NONE,
@@ -42,6 +43,8 @@ struct json_iter json_parse(const struct json_iter*, json_pair);
 json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
 json_size json_cpy(json_char*, json_size, const struct json_token*);
 int json_cmp(const struct json_token*, const json_char*);
-enum json_typ json_type(const struct json_token *tok);
+enum json_typ json_type(const struct json_token*);
+enum json_typ json_num(json_number *num, const struct json_token *tok);
+
 
 #endif

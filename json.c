@@ -39,7 +39,7 @@ json_read(const struct json_iter* prev, struct json_token *obj)
         ['{']       = &&l_up,
         ['}']       = &&l_down,
         ['-']       = &&l_bare,
-        [49 ... 57] = &&l_bare,
+        [48 ... 57] = &&l_bare,
         ['t']       = &&l_bare,
         ['f']       = &&l_bare,
         ['n']       = &&l_bare,
@@ -124,7 +124,7 @@ l_up:
 
 l_down:
     if (--iter.depth == 1) {
-        obj->len = (json_size)(cur - obj->str);
+        obj->len = (json_size)(cur - obj->str) + 1;
         goto l_yield;
     }
     goto l_loop;
@@ -138,7 +138,7 @@ l_qup:
 l_qdown:
     iter.go = go_struct;
     if (iter.depth == 1) {
-        obj->len = (json_size)(cur - obj->str);
+        obj->len = (json_size)(cur - obj->str) + 1;
         goto l_yield;
     }
     goto l_loop;
@@ -212,14 +212,14 @@ json_dup(const struct json_token *tok, void*(*alloc)(json_size))
     if (!tok || !alloc)
         return 0;
 
-    json_char *str = alloc(tok->len + 1);
+    json_char *str = alloc(tok->len + 2);
     if (!str)
         return 0;
 
     unsigned i = 0;
-    for (i = 0; i < tok->len; i++)
+    for (i = 0; i <= tok->len; i++)
         str[i] = tok->str[i];
-    str[tok->len] = '\0';
+    str[tok->len+2] = '\0';
     return str;
 }
 
@@ -231,13 +231,13 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
 
     json_size result;
     const json_size *siz;
-    if (max <= (tok->len + 1)) {
+    if (max <= (tok->len + 2)) {
         result = max;
-        max--;
+        max -= 2;
         siz = &max;
     } else {
         result = tok->len;
-        siz = &tok->len;
+        siz = &tok->len + 1;
     }
 
     unsigned i = 0;
@@ -267,30 +267,45 @@ json_type(const struct json_token *tok)
 {
     if (!tok || !tok->str || !tok->len)
         return JSON_NONE;
-    if (tok->str[0] == '{') {
-        if (tok->str[tok->len] == '}')
-            return JSON_OBJECT;
-        else
-            return JSON_NONE;
-    }
-    if (tok->str[0] == '[') {
-        if (tok->str[tok->len] == ']')
-            return JSON_ARRAY;
-        else
-            return JSON_NONE;
-    }
-    if (tok->str[0] == '\"') {
-        if (tok->str[tok->len] == '\"')
-            return JSON_STRING;
-        else
-            return JSON_NONE;
-    }
+    if (tok->str[0] == '{')
+        return JSON_OBJECT;
+    if (tok->str[0] == '[')
+        return JSON_ARRAY;
+    if (tok->str[0] == '\"')
+        return JSON_STRING;
     if (!json_cmp(tok, (const json_char*)"true"))
         return JSON_TRUE;
     if (!json_cmp(tok, (const json_char*)"false"))
         return JSON_FALSE;
     if (!json_cmp(tok, (const json_char*)"null"))
         return JSON_NULL;
+    return JSON_NUMBER;
+}
+
+enum json_typ
+json_num(json_number *num, const struct json_token *tok)
+{
+    if (!tok || !num || !tok->str || !tok->len)
+        return JSON_NONE;
+
+    int frac = 0;
+    double fac = 0.1;
+    double res = 0;
+    const int sign = (tok->str[0] == '-') ? -1 : 1;
+    json_size i = (tok->str[0] == '-') ? 1 : 0;
+    while (i < tok->len) {
+        if (tok->str[i] == '.') {
+            frac = 1;
+            i++;
+        }
+        if (frac == 0) {
+            res = res * 10 + tok->str[i++] - '0';
+        } else {
+            res = res + (tok->str[i++] - '0') * fac;
+            fac *= 0.1;
+        }
+    }
+    *num = (sign < 0) ? -res : res;
     return JSON_NUMBER;
 }
 
