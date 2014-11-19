@@ -298,6 +298,8 @@ json_num(json_number *num, const struct json_token *tok)
             frac = 1;
             i++;
         }
+        if (tok->str[i] < '0' || tok->str[i] > '9')
+            return JSON_NONE;
         if (frac == 0) {
             res = res * 10 + tok->str[i++] - '0';
         } else {
