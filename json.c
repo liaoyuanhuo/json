@@ -229,8 +229,8 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
         return 0;
 
     unsigned i = 0;
-    const json_size ret = (max <= (tok->len + 1)) ? max : tok->len;
-    const json_size siz = (max <= (tok->len + 1)) ? max-1 : tok->len;
+    const json_size ret = (max < (tok->len + 1)) ? max : tok->len;
+    const json_size siz = (max < (tok->len + 1)) ? max-1 : tok->len;
     for (i = 0; i < siz; i++)
         dst[i] = tok->str[i];
     dst[siz] = '\0';

@@ -49,6 +49,14 @@ int main(void)
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"value\""));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_STRING);
+
+        json_char buffer[8];
+        test_assert(json_cpy(buffer, sizeof buffer, &pair[JSON_VALUE]) == 7);
+        test_assert(!strcmp((char*)&buffer[0], "\"value\""));
+
+        json_char *str;
+        str = json_dup(&pair[JSON_VALUE], malloc);
+        test_assert(!strcmp((char*)str, "\"value\""));
     }
 
     test_section("num")
