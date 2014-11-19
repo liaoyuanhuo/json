@@ -38,8 +38,8 @@ struct json_iter {
 };
 
 struct json_iter json_begin(const json_char*, json_size);
-struct json_iter json_read(const struct json_iter*, struct json_token*);
-struct json_iter json_parse(const struct json_iter*, json_pair);
+struct json_iter json_read(struct json_token*, const struct json_iter*);
+struct json_iter json_parse(json_pair, const struct json_iter*);
 json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
 json_size json_cpy(json_char*, json_size, const struct json_token*);
 int json_cmp(const struct json_token*, const json_char*);

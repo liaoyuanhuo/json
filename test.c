@@ -44,7 +44,7 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"value\""));
@@ -58,7 +58,7 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"1234"));
@@ -76,7 +76,7 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"$¢€𤪤\""));
@@ -90,25 +90,25 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"test\""));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_STRING);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"age\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"42"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"utf8\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"äöü\""));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_STRING);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"alive\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"true"));
@@ -122,7 +122,7 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"list\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"[1,2,3,4]"));
@@ -132,10 +132,10 @@ int main(void)
         struct json_token tok;
         const json_char check[] = "1234";
         iter = json_begin(pair[JSON_VALUE].str, pair[JSON_VALUE].len);
-        iter = json_read(&iter, &tok);
+        iter = json_read(&tok, &iter);
         while (iter.src) {
             test_assert(tok.str[0] == check[i++]);
-            iter = json_read(&iter, &tok);
+            iter = json_read(&tok, &iter);
         }
     }
 
@@ -146,14 +146,14 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"sub\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"{\"a\"=1234.5678}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
 
         iter = json_begin(pair[JSON_VALUE].str, pair[JSON_VALUE].len);
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"a\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"1234.5678"));
@@ -171,14 +171,14 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"sub\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"{\"a\"=[1,2,3,4]}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
 
         iter = json_begin(pair[JSON_VALUE].str, pair[JSON_VALUE].len);
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"a\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"[1,2,3,4]"));
@@ -188,10 +188,10 @@ int main(void)
         struct json_token tok;
         const json_char check[] = "1234";
         iter = json_begin(pair[JSON_VALUE].str, pair[JSON_VALUE].len);
-        iter = json_read(&iter, &tok);
+        iter = json_read(&tok, &iter);
         while (iter.src) {
             test_assert(tok.str[0] == check[i++]);
-            iter = json_read(&iter, &tok);
+            iter = json_read(&tok, &iter);
         }
     }
 
@@ -202,13 +202,13 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"sub\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"{\"a\"=\"b\"}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"list\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"{\"c\"=\"d\"}"));
@@ -222,25 +222,25 @@ int main(void)
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"sub\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"{\"a\"= \"b\"}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"list\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"[1,2,3,4]"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_ARRAY);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"a\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"true"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_TRUE);
 
-        iter = json_parse(&iter, pair);
+        iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"b\""));
         test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"\"0a1b2\""));

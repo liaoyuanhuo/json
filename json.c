@@ -22,7 +22,7 @@ json_begin(const json_char* str, json_size len)
 }
 
 struct json_iter
-json_read(const struct json_iter* prev, struct json_token *obj)
+json_read(struct json_token *obj, const struct json_iter* prev)
 {
     static const void *go_struct[] = {
         [0 ... 255] = &&l_fail,
@@ -196,13 +196,13 @@ l_yield:
 }
 
 struct json_iter
-json_parse(const struct json_iter* it, json_pair p)
+json_parse(json_pair p, const struct json_iter* it)
 {
     struct json_iter next;
-    next = json_read(it, &p[JSON_NAME]);
+    next = json_read(&p[JSON_NAME], it);
     if (next.err)
         return next;
-    return json_read(&next, &p[JSON_VALUE]);
+    return json_read(&p[JSON_VALUE], &next);
 }
 
 

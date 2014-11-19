@@ -37,7 +37,7 @@ array values and providing the base for the next function.
 
 ```c
 struct json_token tok;
-iter = json_read(&iter, &tok);
+iter = json_read(&tok, &iter);
 ```
 The second parse function `json_parse` is for name + value pairs
 and uses the `json_read` function internally to read in two tokens.
@@ -46,7 +46,7 @@ returns the next iterator.
 
 ```c
 json_pair pair;
-iter = json_parse(&iter, pair);
+iter = json_parse(pair, &iter);
 ```
 To access the string in the token or token pair there are two utility functions.
 The first function `json_dup` takes a read token and a allocator callback and
