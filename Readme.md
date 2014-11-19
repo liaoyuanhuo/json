@@ -73,11 +73,9 @@ function does not perform extensive validation of content.
 const enum json_typ t = json_type(&tok);
 ```
 Last but no least `json_num` converts a read token into a number that
-is provided as an argument and returns JSON_NUMBER on success. As with most
-provided functions no validation takes place and the user has to make sure
-the token is correct. Furthermore not all JSON number representation can
+is provided as an argument and returns JSON_NUMBER on success. Not all JSON number representation can
 be converted. As for now the conversion is limited on integers ([0-9]*) and simple
-fraction ([0-9]*.[0-9]*) numbers.
+fraction ([0-9]*.[0-9]*).
 ```c
 json_number num = 0;
 int res = (json_num(&num, &tok) == JSON_NUMBER);
