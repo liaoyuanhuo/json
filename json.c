@@ -205,7 +205,6 @@ json_parse(json_pair p, const struct json_iter* it)
     return json_read(&p[JSON_VALUE], &next);
 }
 
-
 json_char*
 json_dup(const struct json_token *tok, void*(*alloc)(json_size))
 {
@@ -217,9 +216,9 @@ json_dup(const struct json_token *tok, void*(*alloc)(json_size))
         return 0;
 
     unsigned i = 0;
-    for (i = 0; i <= tok->len; i++)
+    for (i = 0; i < tok->len; i++)
         str[i] = tok->str[i];
-    str[tok->len+1] = '\0';
+    str[tok->len] = '\0';
     return str;
 }
 
@@ -229,23 +228,13 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
     if (!dst || !max || !tok)
         return 0;
 
-    json_size result;
-    const json_size *siz;
-    if (max <= (tok->len + 1)) {
-        result = max;
-        max -= 1;
-        siz = &max;
-    } else {
-        result = tok->len;
-        siz = &tok->len + 1;
-    }
-
     unsigned i = 0;
-    for (i = 0; i < *siz; i++)
+    const json_size ret = (max <= (tok->len + 1)) ? max : tok->len;
+    const json_size siz = (max <= (tok->len + 1)) ? max-1 : tok->len;
+    for (i = 0; i < siz; i++)
         dst[i] = tok->str[i];
-
-    dst[*siz] = '\0';
-    return result;
+    dst[siz] = '\0';
+    return ret;
 }
 
 int
