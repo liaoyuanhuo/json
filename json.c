@@ -120,6 +120,8 @@ l_fail:
 l_up:
     if (iter.depth++ == 1)
         obj->str = cur;
+    else
+        obj->sub++;
     goto l_loop;
 
 l_down:
@@ -133,6 +135,8 @@ l_qup:
     iter.go = go_string;
     if (iter.depth == 1)
         obj->str = cur;
+    else
+        obj->sub++;
     goto l_loop;
 
 l_qdown:
@@ -154,6 +158,8 @@ l_unesc:
 l_bare:
     if (iter.depth == 1)
         obj->str = cur;
+    else
+        obj->sub++;
     iter.go = go_bare;
     goto l_loop;
 

@@ -27,6 +27,7 @@ enum json_typ {
 typedef struct json_token {
     const json_char *str;
     json_size len;
+    json_size sub;
 } json_pair[2];
 
 struct json_iter {
