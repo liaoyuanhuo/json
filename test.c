@@ -78,6 +78,114 @@ int main(void)
         test_assert(num == 1234.0);
     }
 
+    test_section("negnum")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=-1234}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"-1234"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num == -1234.0);
+    }
+
+    test_section("fracnum")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=1234.5678}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"1234.5678"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num == 1234.5678);
+    }
+
+    test_section("negfracnum")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=-1234.5678}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"-1234.5678"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num == -1234.5678);
+    }
+
+    test_section("exponent")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=2e2}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"2e2"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num == 200.0);
+    }
+
+    test_section("negexponent")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=-1234e-2}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"-1234e-2"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num == -12.34);
+    }
+
+    test_section("smallexp")
+    {
+        struct json_iter iter;
+        const json_char buf[] = "{\"name\"=2.567e-4}";
+        iter = json_begin(buf, sizeof buf);
+
+        json_pair pair;
+        iter = json_parse(pair, &iter);
+        test_assert(!iter.err);
+        test_assert(!json_cmp(&pair[JSON_NAME], (const json_char*)"\"name\""));
+        test_assert(!json_cmp(&pair[JSON_VALUE], (const json_char*)"2.567e-4"));
+        test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
+
+        json_number num;
+        test_assert(json_num(&num, &pair[JSON_VALUE]) == JSON_NUMBER);
+        test_assert(num >= 0.0002567 && num <= 0.0002568);
+    }
+
     test_section("utf8")
     {
         struct json_iter iter;

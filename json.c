@@ -268,42 +268,113 @@ json_type(const struct json_token *tok)
         return JSON_ARRAY;
     if (tok->str[0] == '\"')
         return JSON_STRING;
-    if (!json_cmp(tok, (const json_char*)"true"))
+    if (tok->str[0] == 't')
         return JSON_TRUE;
-    if (!json_cmp(tok, (const json_char*)"false"))
+    if (tok->str[0] == 'f')
         return JSON_FALSE;
-    if (!json_cmp(tok, (const json_char*)"null"))
+    if (tok->str[0] == 'n')
         return JSON_NULL;
     return JSON_NUMBER;
+}
+
+static json_number
+ipow(int base, unsigned exp)
+{
+    long long res = 1;
+    while (exp) {
+        if (exp & 1)
+            res *= base;
+        exp >>= 1;
+        base *= base;
+    }
+    return (json_number)res;
+}
+
+static json_number
+stoi(struct json_token *tok)
+{
+    if (!tok->str || !tok->len)
+        return 0;
+    json_number n = 0;
+    json_size i = 0;
+    json_size neg = (tok->str[0] == '-') ? 1 : 0;
+    for (i = neg; i < tok->len; i++)
+        n = (n * 10) + tok->str[i]  - '0';
+    return (neg) ? -n : n;
+}
+
+static json_number
+stof(struct json_token *tok)
+{
+    if (!tok->str || !tok->len)
+        return 0;
+    json_number n = 0;
+    json_number f = 0.1;
+    json_size i = 0;
+    for (i = 0; i < tok->len; i++) {
+        n = n + (tok->str[i] - '0') * f;
+        f *= 0.1;
+    }
+    return n;
 }
 
 enum json_typ
 json_num(json_number *num, const struct json_token *tok)
 {
-    if (!tok || !num || !tok->str || !tok->len)
+    static const void **go_num[] = {
+        [0 ... 255] = &&l_fail,
+        [48 ... 57] = &&l_loop,
+        ['-'] = &&l_loop,
+        ['+'] = &&l_loop,
+        ['.'] = &&l_flt,
+        ['e'] = &&l_exp,
+        ['E'] = &&l_exp,
+    };
+    if (!num || !tok || !tok->str || !tok->len)
         return JSON_NONE;
 
-    int frac = 0;
-    double fac = 0.1;
-    double res = 0;
-    const int sign = (tok->str[0] == '-') ? -1 : 1;
-    json_size i = (tok->str[0] == '-') ? 1 : 0;
-    while (i < tok->len) {
-        if (tok->str[i] == '.') {
-            frac = 1;
-            i++;
-        }
-        if (tok->str[i] < '0' || tok->str[i] > '9')
-            return JSON_NONE;
-        if (frac == 0) {
-            res = res * 10 + tok->str[i++] - '0';
-        } else {
-            res = res + (tok->str[i++] - '0') * fac;
-            fac *= 0.1;
-        }
+    enum {INT, FLT, EXP, TOKS};
+    struct json_token nums[TOKS] = {{0}};
+    struct json_token *write = &nums[INT];
+    write->str = tok->str;
+
+    json_size len = tok->len;
+    const json_char *cur;
+    for (cur = tok->str; len; cur++, len--) {
+        goto *go_num[*cur];
+        l_loop:;
     }
-    *num = (sign < 0) ? -res : res;
+    write->len = (json_size)(cur - write->str);
+
+    const json_number i = stoi(&nums[INT]);
+    const json_number f = stof(&nums[FLT]);
+    const json_number e = stoi(&nums[EXP]);
+    json_number p = ipow(10, (unsigned)((e < 0) ? -e : e));
+    if (e < 0)
+        p = (1 / p);
+    *num = (i + ((i < 0) ? -f : f)) * p;
     return JSON_NUMBER;
+
+l_flt:
+    if (nums[FLT].str)
+        return JSON_NONE;
+    if (nums[EXP].str)
+        return JSON_NONE;
+    write->len = (json_size)(cur - write->str);
+    write = &nums[FLT];
+    write->str = cur + 1;
+    goto l_loop;
+
+l_exp:
+    if (nums[EXP].str)
+        return JSON_NONE;
+    write->len = (json_size)(cur - write->str);
+    write = &nums[EXP];
+    write->str = cur + 1;
+    goto l_loop;
+
+l_fail:
+    return JSON_NONE;
 }
 
 #pragma GCC diagnostic pop
