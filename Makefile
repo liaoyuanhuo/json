@@ -12,7 +12,7 @@ DFLAGS += -Wstrict-prototypes -Wold-style-definition -Wconversion
 DFLAGS += -Wredundant-decls -Wnested-externs -Wmissing-include-dirs
 DFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wmissing-prototypes -Wconversion
 DFLAGS += -Wswitch-default -Wundef -Wno-unused -Wstrict-overflow=5 -Wsign-conversion
-DFLAGS += -Winit-self -Wstrict-aliasing
+DFLAGS += -Winit-self -Wstrict-aliasing -fsanitize=address -fno-omit-frame-pointer
 CFLAGS = -O3 -fno-gcse
 
 .PHONY: release

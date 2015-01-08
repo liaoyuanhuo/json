@@ -13,7 +13,7 @@ static const struct json_iter ITER_NULL;
 static const struct json_token TOKEN_NULL;
 
 struct json_iter
-json_begin(const json_char* str, json_size len)
+json_begin(const json_char *str, json_size len)
 {
     struct json_iter iter = {0};
     iter.src = str;
@@ -39,6 +39,7 @@ json_read(struct json_token *obj, const struct json_iter* prev)
         ['{']       = &&l_up,
         ['}']       = &&l_down,
         ['-']       = &&l_bare,
+        ['+']       = &&l_bare,
         [48 ... 57] = &&l_bare,
         ['t']       = &&l_bare,
         ['f']       = &&l_bare,
@@ -99,7 +100,7 @@ json_read(struct json_token *obj, const struct json_iter* prev)
 
     json_size len = iter.len;
     const json_char *cur;
-    int utf8_remain = 0;
+    json_int utf8_remain = 0;
     for (cur = iter.src; len; cur++, len--) {
         goto *iter.go[*cur];
         l_loop:;
@@ -118,10 +119,13 @@ l_fail:
     return iter;
 
 l_up:
-    if (iter.depth++ == 1)
+    if (iter.depth++ == 1) {
         obj->str = cur;
-    else
+    } else {
+        if (iter.depth == prev->depth+1)
+            obj->children++;
         obj->sub++;
+    }
     goto l_loop;
 
 l_down:
@@ -133,10 +137,13 @@ l_down:
 
 l_qup:
     iter.go = go_string;
-    if (iter.depth == 1)
+    if (iter.depth == 1) {
         obj->str = cur;
-    else
+    } else {
+        if (iter.depth == prev->depth+1)
+            obj->children++;
         obj->sub++;
+    }
     goto l_loop;
 
 l_qdown:
@@ -156,10 +163,13 @@ l_unesc:
     goto l_loop;
 
 l_bare:
-    if (iter.depth == 1)
+    if (iter.depth == 1) {
         obj->str = cur;
-    else
+    } else {
+        if (iter.depth == prev->depth+1)
+            obj->children++;
         obj->sub++;
+    }
     iter.go = go_bare;
     goto l_loop;
 
@@ -216,12 +226,11 @@ json_dup(const struct json_token *tok, void*(*alloc)(json_size))
 {
     if (!tok || !alloc)
         return 0;
-
     json_char *str = alloc(tok->len + 1);
     if (!str)
         return 0;
 
-    unsigned i = 0;
+    json_size i = 0;
     for (i = 0; i < tok->len; i++)
         str[i] = tok->str[i];
     str[tok->len] = '\0';
@@ -233,7 +242,6 @@ json_cpy(json_char *dst, json_size max, const struct json_token* tok)
 {
     if (!dst || !max || !tok)
         return 0;
-
     unsigned i = 0;
     const json_size ret = (max < (tok->len + 1)) ? max : tok->len;
     const json_size siz = (max < (tok->len + 1)) ? max-1 : tok->len;
@@ -248,7 +256,6 @@ json_cmp(const struct json_token* tok, const json_char* str)
 {
     if (!tok || !str)
         return 1;
-
     json_size i;
     for (i = 0; (i < tok->len && *str); i++, str++){
         if (tok->str[i] != *str)
@@ -297,8 +304,9 @@ stoi(struct json_token *tok)
         return 0;
     json_number n = 0;
     json_size i = 0;
-    json_size neg = (tok->str[0] == '-') ? 1 : 0;
-    for (i = neg; i < tok->len; i++)
+    const json_size off = (tok->str[0] == '-' || tok->str[0] == '+') ? 1 : 0;
+    const json_size neg = (tok->str[0] == '-') ? 1 : 0;
+    for (i = off; i < tok->len; i++)
         n = (n * 10) + tok->str[i]  - '0';
     return (neg) ? -n : n;
 }
@@ -375,6 +383,15 @@ l_exp:
 
 l_fail:
     return JSON_NONE;
+}
+
+void
+json_deq(struct json_token *tok)
+{
+    if (tok->str[0] == '\"') {
+        tok->str++;
+        tok->len-=2;
+    }
 }
 
 #pragma GCC diagnostic pop
