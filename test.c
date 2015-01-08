@@ -175,14 +175,14 @@ int main(void)
     test_section("smallexp")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=+2.567e-4}";
+        const json_char buf[] = "{\"name\"=2.567e-4}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"name\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"+2.567e-4"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"2.567e-4"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_NUMBER);
 
         json_number num;
