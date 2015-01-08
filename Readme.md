@@ -84,8 +84,8 @@ json_deq(&tok);
 ```
 ## References
 - [json](www.json.org): Homepage of the JSON standard describing the parser grammar.
-- [js0n](https://github.com/quartzjer/js0n): The project Where I stole parts of the parser from.
-- [vec](https://github.com/rxi/vec): The Project where I stole the nice unit-test macros from.
+- [js0n](https://github.com/quartzjer/js0n): The project where I stole parts of the parser from.
+- [vec](https://github.com/rxi/vec): The project where I stole the nice unit-test macros from.
 
 # License
     (The MIT License)
