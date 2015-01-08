@@ -83,9 +83,9 @@ struct json_token tok;
 json_deq(&tok);
 ```
 ## References
-- [JSON standart](www.json.org).
-- [js0n this projects basis](https://github.com/quartzjer/js0n).
-- [vec the origin of the test macros](https://github.com/rxi/vec).
+- [JSON standard homepage describing the parser grammar](www.json.org).
+- [js0n from quartjer the project I stole parts of the parser from](https://github.com/quartzjer/js0n).
+- [vec the proect where I stole the nice unit-test macros from](https://github.com/rxi/vec).
 
 # License
     (The MIT License)
