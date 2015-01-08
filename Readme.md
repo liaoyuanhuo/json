@@ -83,7 +83,7 @@ struct json_token tok;
 json_deq(&tok);
 ```
 ## References
-- [Computed gotos](eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables): Eli Bendersky's article describing the gcc extension computed gotos.
+- [computed gotos](http://eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables): Eli Bendersky's article describing the gcc extension computed gotos.
 - [json](www.json.org): Homepage of the JSON standard describing the parser grammar.
 - [js0n](https://github.com/quartzjer/js0n): The project where I stole parts of the parser from.
 - [vec](https://github.com/rxi/vec): The project where I stole the nice unit-test macros from.
