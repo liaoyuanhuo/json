@@ -4,16 +4,13 @@ allocating. The implementation is very simple but should parse any valid
 json input, but trades validation for efficency.
 One pass of the parser only reads up to the first depth of value
 and pair(key,value), but deeper levels can be reached with the parsed output.
-The general concept is based on [js0n](https://github.com/quartzjer/js0n) but
-implements a different API. In addition the origin of the nice test macros can be
-found in [vec](https://github.com/rxi/vec).
 
 ## Features
-    - written in C
-    - small (~250 loc)
-    - no allocation
-    - utf8 support
-    - minimal validation
+- written in C
+- small (~250 loc)
+- no allocation
+- utf8 support
+- minimal validation
 
 ## Prerequisites
 To build and use the JSON parser you only need to drop the two
@@ -85,5 +82,10 @@ anymore.
 struct json_token tok;
 json_deq(&tok);
 ```
+## References
+- [JSON standart](www.json.org).
+- [js0n this projects basis](https://github.com/quartzjer/js0n).
+- [vec the origin of the test macros](https://github.com/rxi/vec).
+
 # License
     (The MIT License)
