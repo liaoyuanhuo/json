@@ -39,7 +39,6 @@ json_read(struct json_token *obj, const struct json_iter* prev)
         ['{']       = &&l_up,
         ['}']       = &&l_down,
         ['-']       = &&l_bare,
-        ['+']       = &&l_bare,
         [48 ... 57] = &&l_bare,
         ['t']       = &&l_bare,
         ['f']       = &&l_bare,
