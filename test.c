@@ -41,7 +41,7 @@ int main(void)
     test_section("str")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=\"value\"}";
+        const json_char buf[] = "{\"name\":\"value\"}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -67,7 +67,7 @@ int main(void)
     test_section("num")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=1234}";
+        const json_char buf[] = "{\"name\":1234}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -85,7 +85,7 @@ int main(void)
     test_section("negnum")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=-1234}";
+        const json_char buf[] = "{\"name\":-1234}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -103,7 +103,7 @@ int main(void)
     test_section("fracnum")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=1234.5678}";
+        const json_char buf[] = "{\"name\":1234.5678}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -121,7 +121,7 @@ int main(void)
     test_section("negfracnum")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=-1234.5678}";
+        const json_char buf[] = "{\"name\":-1234.5678}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -139,7 +139,7 @@ int main(void)
     test_section("exponent")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=2e+2}";
+        const json_char buf[] = "{\"name\":2e+2}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -157,7 +157,7 @@ int main(void)
     test_section("negexponent")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=-1234e-2}";
+        const json_char buf[] = "{\"name\":-1234e-2}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -175,7 +175,7 @@ int main(void)
     test_section("smallexp")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=2.567e-4}";
+        const json_char buf[] = "{\"name\":2.567e-4}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -193,7 +193,7 @@ int main(void)
     test_section("utf8")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=\"$¢€𤪤\"}";
+        const json_char buf[] = "{\"name\":\"$¢€𤪤\"}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -207,7 +207,7 @@ int main(void)
     test_section("map")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"name\"=\"test\", \"age\"=42, \"utf8\"=\"äöü\", \"alive\"=true}";
+        const json_char buf[] = "{\"name\":\"test\", \"age\":42, \"utf8\":\"äöü\", \"alive\":true}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -239,7 +239,7 @@ int main(void)
     test_section("array")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"list\"=[ 1.0, 2.0, 3.0, 4.0 ]}";
+        const json_char buf[] = "{\"list\":[ 1.0, 2.0, 3.0, 4.0 ]}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
@@ -267,14 +267,14 @@ int main(void)
     test_section("sub")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"sub\"={\"a\"=1234.5678}}";
+        const json_char buf[] = "{\"sub\":{\"a\":1234.5678}}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"sub\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\"=1234.5678}"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\":1234.5678}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
         test_assert(pair[JSON_VALUE].sub == 2);
         test_assert(pair[JSON_VALUE].children == 2);
@@ -294,14 +294,14 @@ int main(void)
     test_section("subarray")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"sub\"={\"a\"=[1,2,3,4]}}";
+        const json_char buf[] = "{\"sub\":{\"a\":[1,2,3,4]}}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"sub\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\"=[1,2,3,4]}"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\":[1,2,3,4]}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
         test_assert(pair[JSON_VALUE].sub == 6);
         test_assert(pair[JSON_VALUE].children == 1);
@@ -329,21 +329,21 @@ int main(void)
     test_section("list")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"sub\"={\"a\"=\"b\"}, \"list\"={\"c\"=\"d\"}}";
+        const json_char buf[] = "{\"sub\":{\"a\":\"b\"}, \"list\":{\"c\":\"d\"}}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"sub\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\"=\"b\"}"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\":\"b\"}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
         test_assert(pair[JSON_VALUE].sub == 2);
 
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"list\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"c\"=\"d\"}"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"c\":\"d\"}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
         test_assert(pair[JSON_VALUE].sub == 2);
         test_assert(pair[JSON_VALUE].children == 2);
@@ -352,14 +352,14 @@ int main(void)
     test_section("table")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"sub\"={\"a\"= \"b\"}, \"list\"=[1,2,3,4], \"a\"=true, \"b\"= \"0a1b2\"}";
+        const json_char buf[] = "{\"sub\":{\"a\": \"b\"}, \"list\":[1,2,3,4], \"a\":true, \"b\": \"0a1b2\"}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"sub\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\"= \"b\"}"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"{\"a\": \"b\"}"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_OBJECT);
         test_assert(pair[JSON_VALUE].sub == 2);
 
