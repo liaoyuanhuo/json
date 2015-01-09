@@ -305,8 +305,10 @@ stoi(struct json_token *tok)
     json_size i = 0;
     const json_size off = (tok->str[0] == '-' || tok->str[0] == '+') ? 1 : 0;
     const json_size neg = (tok->str[0] == '-') ? 1 : 0;
-    for (i = off; i < tok->len; i++)
-        n = (n * 10) + tok->str[i]  - '0';
+    for (i = off; i < tok->len; i++) {
+        if ((tok->str[i] >= '0') && (tok->str[i] <= '9'))
+            n = (n * 10) + tok->str[i]  - '0';
+    }
     return (neg) ? -n : n;
 }
 
@@ -319,8 +321,10 @@ stof(struct json_token *tok)
     json_number f = 0.1;
     json_size i = 0;
     for (i = 0; i < tok->len; i++) {
-        n = n + (tok->str[i] - '0') * f;
-        f *= 0.1;
+        if ((tok->str[i] >= '0') && (tok->str[i] <= '9')) {
+            n = n + (tok->str[i] - '0') * f;
+            f *= 0.1;
+        }
     }
     return n;
 }
@@ -336,6 +340,7 @@ json_num(json_number *num, const struct json_token *tok)
         ['.'] = &&l_flt,
         ['e'] = &&l_exp,
         ['E'] = &&l_exp,
+        [' '] = &&l_break
     };
     if (!num || !tok || !tok->str || !tok->len)
         return JSON_NONE;
@@ -380,6 +385,9 @@ l_exp:
     write->str = cur + 1;
     goto l_loop;
 
+l_break:
+    len = 1;
+    goto l_loop;
 l_fail:
     return JSON_NONE;
 }

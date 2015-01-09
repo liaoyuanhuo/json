@@ -239,26 +239,28 @@ int main(void)
     test_section("array")
     {
         struct json_iter iter;
-        const json_char buf[] = "{\"list\"=[1,2,3,4]}";
+        const json_char buf[] = "{\"list\"=[ 1.0, 2.0, 3.0, 4.0 ]}";
         iter = json_begin(buf, sizeof buf);
 
         json_pair pair;
         iter = json_parse(pair, &iter);
         test_assert(!iter.err);
         test_assert(!json_cmp(&pair[JSON_NAME], utf"\"list\""));
-        test_assert(!json_cmp(&pair[JSON_VALUE], utf"[1,2,3,4]"));
+        test_assert(!json_cmp(&pair[JSON_VALUE], utf"[ 1.0, 2.0, 3.0, 4.0 ]"));
         test_assert(json_type(&pair[JSON_VALUE]) == JSON_ARRAY);
         test_assert(pair[JSON_VALUE].sub == 4);
         test_assert(pair[JSON_VALUE].children == 4);
 
-        int i = 0;
+        int i = 1;
+        json_number num;
         struct json_token tok;
-        const json_char check[] = "1234";
         iter = json_begin(pair[JSON_VALUE].str, pair[JSON_VALUE].len);
         iter = json_read(&tok, &iter);
         while (iter.src) {
-            test_assert(tok.str[0] == check[i++]);
+            test_assert(json_num(&num, &tok) == JSON_NUMBER);
+            test_assert((json_number)i == num);
             iter = json_read(&tok, &iter);
+            i++;
         }
     }
 
