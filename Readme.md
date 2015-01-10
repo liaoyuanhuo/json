@@ -1,5 +1,5 @@
 # JSON
-A one-pass JSON parser with no memory overhead with no memory copying or
+A one-pass JSON parser with no memory overhead, copying or
 allocating. The implementation is very simple but should parse any valid
 json input, but trades validation for efficency.
 One pass of the parser only reads up to the first depth of value
@@ -7,20 +7,19 @@ and pair(key,value), but deeper levels can be reached with the parsed output.
 
 ## Features
 - written in C
-- small (~250 loc)
-- no allocation
-- utf8 support
+- small (~350 loc)
+- no memory allocation
+- UTF-8 support
 - minimal validation
 
 ## Prerequisites
 To build and use the JSON parser you only need to drop the two
-Source files into your project and offer the following
-build environment:
-* GCC or clang compiler
+source files into your project and a compiler that can compile
+computed gotos (GCC, clang).
 
 ## Usage
 First the json parser iterator needs to be created by using
-the `json_begin` function which takes a utf8 string + length in bytes
+the `json_begin` function which takes a UTF-8 string + length in bytes
 and returns the newly created iterator.
 
 ```c
