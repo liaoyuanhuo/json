@@ -31,8 +31,8 @@ json_read(struct json_token *obj, const struct json_iter* prev)
         ['\n']      = &&l_loop,
         [' ']       = &&l_loop,
         ['"']       = &&l_qup,
-        [':']       = &&l_loop,
-        ['=']       = &&l_loop,
+        [':']       = &&l_sep,
+        ['=']       = &&l_sep,
         [',']       = &&l_loop,
         ['[']       = &&l_up,
         [']']       = &&l_down,
@@ -117,14 +117,23 @@ l_fail:
     iter.err = 1;
     return iter;
 
+l_sep:
+    if (iter.depth != 1) {
+        if (iter.depth == prev->depth+1) {
+            obj->children--;
+        }
+        obj->sub--;
+    }
+    goto l_loop;
+
 l_up:
-    if (iter.depth++ == 1) {
-        obj->str = cur;
-    } else {
+    if (iter.depth > 1) {
         if (iter.depth == prev->depth+1)
             obj->children++;
         obj->sub++;
     }
+    if (iter.depth++ == 1)
+        obj->str = cur;
     goto l_loop;
 
 l_down:
