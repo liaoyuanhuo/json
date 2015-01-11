@@ -118,20 +118,13 @@ l_fail:
     return iter;
 
 l_sep:
-    if (iter.depth != 1) {
-        if (iter.depth == prev->depth+1) {
-            obj->children--;
-        }
-        obj->sub--;
-    }
+    if (iter.depth == prev->depth+1)
+        obj->children--;
     goto l_loop;
 
 l_up:
-    if (iter.depth > 1) {
-        if (iter.depth == prev->depth+1)
-            obj->children++;
-        obj->sub++;
-    }
+    if (iter.depth == 2)
+        obj->children++;
     if (iter.depth++ == 1)
         obj->str = cur;
     goto l_loop;
@@ -145,13 +138,10 @@ l_down:
 
 l_qup:
     iter.go = go_string;
-    if (iter.depth == 1) {
+    if (iter.depth == 1)
         obj->str = cur;
-    } else {
-        if (iter.depth == prev->depth+1)
-            obj->children++;
-        obj->sub++;
-    }
+    if (iter.depth == 2)
+        obj->children++;
     goto l_loop;
 
 l_qdown:
@@ -171,13 +161,10 @@ l_unesc:
     goto l_loop;
 
 l_bare:
-    if (iter.depth == 1) {
+    if (iter.depth == 1)
         obj->str = cur;
-    } else {
-        if (iter.depth == prev->depth+1)
-            obj->children++;
-        obj->sub++;
-    }
+    if (iter.depth == 2)
+        obj->children++;
     iter.go = go_bare;
     goto l_loop;
 
