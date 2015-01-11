@@ -118,7 +118,7 @@ l_fail:
     return iter;
 
 l_sep:
-    if (iter.depth == prev->depth+1)
+    if (iter.depth == 2)
         obj->children--;
     goto l_loop;
 
