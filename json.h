@@ -6,9 +6,6 @@
 #ifndef JSON_H_
 #define JSON_H_
 
-#define JSON_NAME 0
-#define JSON_VALUE 1
-
 typedef int json_int;
 typedef unsigned char json_char;
 typedef unsigned long json_size;
@@ -25,11 +22,16 @@ enum json_typ {
     JSON_NULL
 };
 
-typedef struct json_token {
+struct json_token {
     const json_char *str;
     json_size len;
     json_size children;
-} json_pair[2];
+};
+
+struct json_pair {
+    struct json_token name;
+    struct json_token value;
+};
 
 struct json_iter {
     json_int depth;
@@ -41,7 +43,7 @@ struct json_iter {
 
 struct json_iter json_begin(const json_char*, json_size);
 struct json_iter json_read(struct json_token*, const struct json_iter*);
-struct json_iter json_parse(json_pair, const struct json_iter*);
+struct json_iter json_parse(struct json_pair*, const struct json_iter*);
 json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
 json_size json_cpy(json_char*, json_size, const struct json_token*);
 int json_cmp(const struct json_token*, const json_char*);

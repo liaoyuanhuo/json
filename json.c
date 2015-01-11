@@ -207,13 +207,13 @@ l_yield:
 }
 
 struct json_iter
-json_parse(json_pair p, const struct json_iter* it)
+json_parse(struct json_pair *p, const struct json_iter* it)
 {
     struct json_iter next;
-    next = json_read(&p[JSON_NAME], it);
+    next = json_read(&p->name, it);
     if (next.err)
         return next;
-    return json_read(&p[JSON_VALUE], &next);
+    return json_read(&p->value, &next);
 }
 
 json_char*
@@ -336,7 +336,10 @@ json_num(json_number *num, const struct json_token *tok)
         ['.'] = &&l_flt,
         ['e'] = &&l_exp,
         ['E'] = &&l_exp,
-        [' '] = &&l_break
+        [' '] = &&l_break,
+        ['\n'] = &&l_break,
+        ['\t'] = &&l_break,
+        ['\r'] = &&l_break,
     };
     if (!num || !tok || !tok->str || !tok->len)
         return JSON_NONE;
