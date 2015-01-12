@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2014
+    Copyright (c) 2015
     vurtun <polygone@gmx.net>
     MIT license
 */
@@ -259,7 +259,7 @@ json_cmp(const struct json_token* tok, const json_char* str)
     return 0;
 }
 
-enum json_typ
+int
 json_type(const struct json_token *tok)
 {
     if (!tok || !tok->str || !tok->len)
@@ -325,7 +325,7 @@ stof(struct json_token *tok)
     return n;
 }
 
-enum json_typ
+int
 json_num(json_number *num, const struct json_token *tok)
 {
     static const void **go_num[] = {
