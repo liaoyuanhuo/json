@@ -86,6 +86,9 @@ json_deq(&tok);
 - [json](www.json.org): Homepage of the JSON standard describing the parser grammar.
 - [js0n](https://github.com/quartzjer/js0n): The project where I stole parts of the parser from.
 - [vec](https://github.com/rxi/vec): The project where I stole the nice unit-test macros from.
+- [lua-resty-opjson](https://github.com/bungle/lua-resty-opjson): leightweight LuaJIT port thanks to bungle
+- [libopjson](https://github.com/bungle/libopjson): tiny port for embedding in
+                        other languages. Thanks to bungle.
 
 # License
     (The MIT License)
