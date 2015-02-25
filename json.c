@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2015
     vurtun <polygone@gmx.net>
-    MIT license
+    MIT licence
 */
 #include "json.h"
 
