@@ -5,13 +5,7 @@ BIN = json
 CC = gcc
 
 #Flags
-CFLAGS = -g -Wall -Wextra -Wformat=2 -Wunreachable-code
-CFLAGS += -fstack-protector-strong -Winline -Wshadow -Wwrite-strings -fstrict-aliasing
-CFLAGS += -Wstrict-prototypes -Wold-style-definition -Wconversion
-CFLAGS += -Wredundant-decls -Wnested-externs -Wmissing-include-dirs
-CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wmissing-prototypes -Wconversion
-CFLAGS += -Wswitch-default -Wundef -Wno-unused -Wstrict-overflow=5 -Wsign-conversion
-CFLAGS += -Winit-self -Wstrict-aliasing -fsanitize=address -fno-omit-frame-pointer
+CFLAGS = -g -Wall -Wextra
 
 .PHONY: clang
 clang: CC = clang
