@@ -7,11 +7,11 @@
 #define JSON_H_
 
 typedef int json_int;
-typedef unsigned char json_char;
+typedef char json_char;
 typedef unsigned long json_size;
 typedef double json_number;
 
-enum json_typ {
+enum json_token_type {
     JSON_NONE,
     JSON_OBJECT,
     JSON_ARRAY,
@@ -34,21 +34,24 @@ struct json_pair {
 };
 
 struct json_iter {
-    json_int depth;
     json_int err;
+    json_int depth;
     const void **go;
     const json_char *src;
     json_size len;
 };
 
+/* Parser */
+void json_init(void);
 struct json_iter json_begin(const json_char*, json_size);
 struct json_iter json_read(struct json_token*, const struct json_iter*);
 struct json_iter json_parse(struct json_pair*, const struct json_iter*);
-json_char *json_dup(const struct json_token*, void*(*alloc)(json_size));
-json_size json_cpy(json_char*, json_size, const struct json_token*);
-json_int json_cmp(const struct json_token*, const json_char*);
 json_int json_type(const struct json_token*);
 json_int json_num(json_number *, const struct json_token*);
-void json_deq(struct json_token*);
+
+/* Utility */
+json_int json_cmp(const struct json_token*, const json_char*);
+json_size json_cpy(json_char*, json_size, const struct json_token*);
+#define json_deq(tok) if ((tok)->str[0] == '\"') {(tok)->str++; (tok)->len-=2;}
 
 #endif

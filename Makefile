@@ -2,19 +2,22 @@
 BIN = json
 
 # Compiler
-CC = gcc
+CC = clang
 
-#Flags
-CFLAGS = -g -Wall -Wextra
+# ANSI C
+CFLAGS = -std=c89 -pedantic -g -Wall -Wextra -DJSON_USE_ANSI_C
 
-.PHONY: clang
-clang: CC = clang
-clang: $(BIN)
+# GCC / CLANG
+# CFLAGS = -g -Wall -Wextra
 
 .PHONY: gcc
 gcc: CC = gcc
 gcc: CFLAGS += -fno-gcse -fno-crossjumping
 gcc: $(BIN)
+
+.PHONY: clang
+clang: CC = clang
+clang: $(BIN)
 
 # Objects
 SRCS = json.c test.c

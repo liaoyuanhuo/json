@@ -11,14 +11,19 @@ and pair(key,value), but deeper levels can be reached with the parsed output.
 - no memory allocation
 - UTF-8 support
 - minimal validation
+- ANSI C version for portability
 
 ## Prerequisites
 To build and use the JSON parser you only need to drop the two
-source files into your project and a compiler that can compile
-computed gotos (GCC, clang).
+source files into your project and either provide a compiler that can compile
+computed gotos (GCC, clang) or use the define JSON_USE_ANSI_C for a ANSI C
+version.
 
 ## Usage
-First the json parser iterator needs to be created by using
+First you have to initialize the library over the function `json_init` which
+does not take any arguments and sets up look up tables for the ANSI C version.
+
+To begin the parsing procces the json parser iterator needs to be created by using
 the `json_begin` function which takes a UTF-8 string + length in bytes
 and returns the newly created iterator.
 
@@ -44,15 +49,9 @@ returns the next iterator.
 struct json_pair pair;
 iter = json_parse(&pair, &iter);
 ```
-To access the string in the token or token pair there are two utility functions.
-The first function `json_dup` takes a read token and a allocator callback and
-returns a newly allocated string which contains the parsed string.
-```c
-json_char *str;
-str = json_dup(&tok, malloc);
-```
-The second function `json_cpy` takes a read token and a buffer with a maximum
-size to copy into and returns the number of bytes that have been copied.
+To access the string in the token or token pair there is the function `json_cpy`
+which takes a read token and a buffer with a maximum size to copy into and returns
+the number of bytes that have been copied.
 ```c
 json_char buf[BUF_SIZ]
 int size = json_cpy(buf, BUF_SIZ, &tok);
