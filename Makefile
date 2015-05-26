@@ -5,10 +5,10 @@ BIN = json
 CC = clang
 
 # ANSI C
-CFLAGS = -std=c89 -pedantic -g -Wall -Wextra -DJSON_USE_ANSI_C
+CFLAGS = -std=c89 -pedantic -g -Wall -Wextra
 
 # GCC / CLANG
-# CFLAGS = -g -Wall -Wextra
+#CFLAGS = -g -Wall -Wextra
 
 .PHONY: gcc
 gcc: CC = gcc
