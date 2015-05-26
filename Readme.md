@@ -15,9 +15,8 @@ and pair(key,value), but deeper levels can be reached with the parsed output.
 
 ## Prerequisites
 To build and use the JSON parser you only need to drop the header and one of the
-source files into your project and either provide a compiler that can compile
-computed gotos (GCC, clang) or use the define JSON_USE_ANSI_C for a ANSI C
-version.
+source files into your project and provide a compiler that can compile
+computed gotos (GCC, clang) for the gcc version.
 
 ## Usage
 First you have to initialize the library over the function `json_init` which
