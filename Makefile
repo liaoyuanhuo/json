@@ -19,9 +19,13 @@ gcc: $(BIN)
 clang: CC = clang
 clang: $(BIN)
 
-# Objects
-SRCS = json.c test.c
+# ANSI C
+SRCS = json_ansi.c test.c
 OBJS = $(SRCS: .c = .o)
+
+## GCC
+#SRCS = json_gcc.c test.c
+#OBJS = $(SRCS: .c = .o)
 
 # Build
 $(BIN): $(SRCS)
