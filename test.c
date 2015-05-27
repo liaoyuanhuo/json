@@ -56,7 +56,7 @@ int main(void)
 
         json_deq(&pair.value);
         test_assert(json_cpy(buffer, sizeof buffer, &pair.value) == 5);
-        test_assert(!strcmp((char*)&buffer[0], "value"));
+        test_assert(!strcmp(&buffer[0], "value"));
     }
 
     test_section("num")
