@@ -9,14 +9,18 @@
 #define NULL ((void*)0)
 #endif
 
-enum json_states {
-    JS_FAILED = 0, JS_LOOP, JS_BREAK,
-    JS_EXP, JS_FLT, JS_SEP,
+enum json_parser_states {
+    JS_FAILED, JS_LOOP, JS_SEP,
     JS_UP, JS_DOWN, JS_QUP,
     JS_QDOWN, JS_ESC, JS_UNESC,
     JS_BARE, JS_UNBARE, JS_UTF8_2,
     JS_UTF8_3, JS_UTF8_4, JS_UTF8_NEXT,
-    JS_UTF_YIELD, JS_MAX
+    JS_MAX
+};
+
+enum json_nuber_states {
+    JSN_FAILED, JSN_LOOP, JSN_FLT,
+    JSN_EXP, JSN_BREAK, JSN_MAX
 };
 
 static const struct json_iter ITER_NULL;
@@ -85,15 +89,15 @@ json_init(void)
 
     /* number state */
     for (i = 48; i <= 57; ++i) go_num[i] = JS_LOOP;
-    go_num['-'] = JS_LOOP;
-    go_num['+'] = JS_LOOP;
-    go_num['.'] = JS_FLT;
-    go_num['e'] = JS_EXP;
-    go_num['E'] = JS_EXP;
-    go_num[' '] = JS_BREAK;
-    go_num['\n'] = JS_BREAK;
-    go_num['\t'] = JS_BREAK;
-    go_num['\r'] = JS_BREAK;
+    go_num['-'] = JSN_LOOP;
+    go_num['+'] = JSN_LOOP;
+    go_num['.'] = JSN_FLT;
+    go_num['e'] = JSN_EXP;
+    go_num['E'] = JSN_EXP;
+    go_num[' '] = JSN_BREAK;
+    go_num['\n'] = JSN_BREAK;
+    go_num['\t'] = JSN_BREAK;
+    go_num['\r'] = JSN_BREAK;
 }
 
 struct json_iter
@@ -108,7 +112,6 @@ json_begin(const json_char *str, json_size len)
 struct json_iter
 json_read(struct json_token *obj, const struct json_iter* prev)
 {
-
     struct json_iter iter;
     json_size len;
     const json_char *cur;
@@ -135,6 +138,7 @@ json_read(struct json_token *obj, const struct json_iter* prev)
             iter.err = 1;
             return iter;
         } break;
+        case JS_LOOP: break;
         case JS_SEP: {
             if (iter.depth == 2)
                 obj->children--;
@@ -204,7 +208,6 @@ json_read(struct json_token *obj, const struct json_iter* prev)
             if (!--utf8_remain)
                 iter.go = (const void**)go_string;
         } break;
-        case JS_LOOP:
         default:
             break;
         }
@@ -298,10 +301,10 @@ json_num(json_number *num, const struct json_token *tok)
     for (cur = tok->str; len; cur++, len--) {
         char state =  go_num[*(unsigned char*)cur];
         switch (state) {
-            case JS_FAILED: {
+            case JSN_FAILED: {
                 return JSON_NONE;
             } break;
-            case JS_FLT: {
+            case JSN_FLT: {
                 if (nums[FLT].str)
                     return JSON_NONE;
                 if (nums[EXP].str)
@@ -310,14 +313,14 @@ json_num(json_number *num, const struct json_token *tok)
                 write = &nums[FLT];
                 write->str = cur + 1;
             } break;
-            case JS_EXP: {
+            case JSN_EXP: {
                 if (nums[EXP].str)
                     return JSON_NONE;
                 write->len = (json_size)(cur - write->str);
                 write = &nums[EXP];
                 write->str = cur + 1;
             } break;
-            case JS_BREAK: {
+            case JSN_BREAK: {
                 len = 1;
             } break;
             default: break;
@@ -393,5 +396,4 @@ json_type(const struct json_token *tok)
         return JSON_NULL;
     return JSON_NUMBER;
 }
-
 
